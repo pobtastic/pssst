@@ -1,0 +1,19 @@
+;
+; SkoolKit ref file for PSSST
+;
+; To build the HTML disassembly, run these commands:
+;   tap2sna.py @pssst.t2s
+;   sna2skool.py -H -c sources/pssst.ctl Pssst.z80 > sources/pssst.skool
+;   skool2html.py -H sources/pssst.skool -T dark
+
+[Config]
+;HtmlWriterClass=:pssst.PssstHtmlWriter
+GameDir=pssst
+
+[Game]
+Game=PSSST
+Logo=#SCR1,0,16,18,6,$4000,$5800(/images/logo)
+Copyright=&copy; 1983 Ultimate Play the Game
+
+[PageHeaders]
+GameIndex=The complete PSSST<>RAM disassembly (work in progress)
