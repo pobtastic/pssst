@@ -858,6 +858,21 @@ c $66D7
   $6700,$03 #REGde=#R$642D.
   $6703,$02 Jump to #R$66F6.
 
+c $670E Colourise Open Flower
+@ $670E label=ColouriseFlower
+  $671D,$03 #REGde=#R$6748.
+  $6720,$03 #REGbc=#N$0907.
+  $672B,$02,b$01 Keep only bits 0-1.
+  $673E,$01 Return.
+@ $6748 label=FlowerAttributes
+B $6748,$3F,$09
+
+c $6787
+B $6787
+  $6791
+
+c $679C
+
 c $67AE
 c $698F
 c $69E8
@@ -1604,11 +1619,11 @@ N $7C72 #DIMENSIONS
   $7C74,$01 #LET(height=#PEEK(#PC)) Height = #N({height}) pixels.
   $7C75,$5A,$03 #UDGARRAY3,attr=7,scale=4,step=3,flip=2;(#PC)-(#PC + ({height} * {width}) - {width})-$01-({width} * $08){$00, $04 * $02, $04 * {width} * $08, $04 * {height}}(flower-03)
 
-N $7CCF #DIMENSIONS
+N $7CCF For attributes see #R$6748. #DIMENSIONS
   $7CCF,$01 Terminator.
   $7CD0,$01 #LET(width=#PEEK(#PC)) Width = #N({width}) bytes.
   $7CD1,$01 #LET(height=#PEEK(#PC)) Height = #N({height}) pixels.
-  $7CD2,$1F8,$09 #UDGARRAY9,attr=7,scale=4,step=9,flip=2;(#PC)-(#PC + ({height} * {width}) - {width})-$01-({width} * $08)(flower-04)
+  $7CD2,$1F8,$09 #UDGARRAY9,scale=4,step=9,flip=2;(#PC)-(#PC + ({height} * {width}) - {width})-$01-({width} * $08)@$6775-$6786;$676C-$6774;$6763-$676B;$6751-$6762;$6748-$6750(flower-04)
 
 b $7ECA Sprite: Explosions
 N $7ECA #DIMENSIONS

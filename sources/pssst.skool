@@ -1800,145 +1800,91 @@ c$66A6 CALL $75B9    ;
 ; Routine at 66D7
 ;
 ; Used by the routine at #R$66A6.
-c$66D7 LD HL,$5E6C    ; #REGhl=#R$5E6C.
- $66DA LD B,$10       ; #REGb=#N$10.
- $66DC CALL $70D6     ; Call #R$70D6.
- $66DF LD A,($5E04)   ; {#R$5E04.
- $66E2 AND A          ;
- $66E3 JR NZ,$6705    ; }
- $66E5 LD A,($5E37)   ;
- $66E8 AND A          ;
- $66E9 JR Z,$6700     ;
- $66EB AND $03        ;
- $66ED JR NZ,$6700    ;
- $66EF LD DE,$641D    ; #REGde=#R$641D.
- $66F2 LD HL,$5E38    ; #REGhl=#R$5E38.
- $66F5 INC (HL)       ;
-*$66F6 CALL $63E1     ; Call #R$63E1.
-*$66F9 LD HL,$5E37    ;
- $66FC INC (HL)       ;
- $66FD JP $5F80       ; Jump to #R$5F80.
-*$6700 LD DE,$642D    ; #REGde=#R$642D.
- $6703 JR $66F6       ; Jump to #R$66F6.
-*$6705 DI             ;
- $6706 LD B,$0A       ;
- $6708 CALL $6110     ;
- $670B EI             ;
- $670C JR $66F9       ;
+c$66D7 LD HL,$5E6C   ; #REGhl=#R$5E6C.
+ $66DA LD B,$10      ; #REGb=#N$10.
+ $66DC CALL $70D6    ; Call #R$70D6.
+ $66DF LD A,($5E04)  ; {#R$5E04.
+ $66E2 AND A         ;
+ $66E3 JR NZ,$6705   ; }
+ $66E5 LD A,($5E37)  ;
+ $66E8 AND A         ;
+ $66E9 JR Z,$6700    ;
+ $66EB AND $03       ;
+ $66ED JR NZ,$6700   ;
+ $66EF LD DE,$641D   ; #REGde=#R$641D.
+ $66F2 LD HL,$5E38   ; #REGhl=#R$5E38.
+ $66F5 INC (HL)      ;
+*$66F6 CALL $63E1    ; Call #R$63E1.
+*$66F9 LD HL,$5E37   ;
+ $66FC INC (HL)      ;
+ $66FD JP $5F80      ; Jump to #R$5F80.
+*$6700 LD DE,$642D   ; #REGde=#R$642D.
+ $6703 JR $66F6      ; Jump to #R$66F6.
+*$6705 DI            ;
+ $6706 LD B,$0A      ;
+ $6708 CALL $6110    ;
+ $670B EI            ;
+ $670C JR $66F9      ;
+
+; Colourise Open Flower
+;
+; Used by the routine at #R$66A6.
+@label=ColouriseFlower
+c$670E LD A,(IX+$01)                            ;
+ $6711 SUB $20                                  ;
+ $6713 LD L,A                                   ;
+ $6714 LD A,(IX+$02)                            ;
+ $6717 SUB $30                                  ;
+ $6719 LD H,A                                   ;
+ $671A CALL $748F                               ;
+ $671D LD DE,$6748                              ; #REGde=#R$6748.
+ $6720 LD BC,$0907                              ; #REGbc=#N$0907.
+*$6723 PUSH BC                                  ;
+ $6724 PUSH HL                                  ;
+*$6725 LD A,($5E37)                             ;
+ $6728 AND A                                    ;
+ $6729 JR Z,$673F                               ;
+ $672B AND %00000011                            ; Keep only bits 0-1.
+ $672D JR NZ,$673F                              ;
+ $672F LD A,(DE)                                ;
+*$6730 LD (HL),A                                ;
+ $6731 INC HL                                   ;
+ $6732 INC DE                                   ;
+ $6733 DJNZ $6725                               ;
+ $6735 POP HL                                   ;
+ $6736 LD BC,$0020                              ;
+ $6739 ADD HL,BC                                ;
+ $673A POP BC                                   ;
+ $673B DEC C                                    ;
+ $673C JR NZ,$6723                              ;
+ $673E RET                                      ; Return.
+*$673F LD A,(DE)                                ;
+ $6740 CP $5E                                   ;
+ $6742 JR NZ,$6730                              ;
+ $6744 LD A,$5B                                 ;
+ $6746 JR $6730                                 ;
+@label=FlowerAttributes
+ $6748 DEFB $44,$44,$44,$44,$44,$44,$44,$44,$44 ;
+ $6751 DEFB $44,$63,$63,$5E,$5E,$5E,$63,$63,$44 ;
+ $675A DEFB $44,$63,$63,$5E,$5E,$5E,$63,$63,$44 ;
+ $6763 DEFB $44,$63,$5E,$5E,$5E,$5E,$5E,$63,$44 ;
+ $676C DEFB $44,$63,$63,$63,$5E,$5E,$63,$63,$44 ;
+ $6775 DEFB $44,$44,$44,$44,$44,$44,$44,$44,$44 ;
+ $677E DEFB $44,$44,$44,$44,$44,$44,$44,$44,$44 ;
+
+; Routine at 6787
+c$6787 DEFB $9A,$76,$39,$7C,$72,$7C,$72,$7C ;
+ $678F DEFB $CF,$7C                         ;
 ; This entry point is used by the routine at #R$66A6.
-*$670E LD A,(IX+$01)  ;
- $6711 SUB $20        ;
- $6713 LD L,A         ;
- $6714 LD A,(IX+$02)  ;
- $6717 SUB $30        ;
- $6719 LD H,A         ;
- $671A CALL $748F     ;
- $671D LD DE,$6748    ;
- $6720 LD BC,$0907    ;
-*$6723 PUSH BC        ;
- $6724 PUSH HL        ;
-*$6725 LD A,($5E37)   ;
- $6728 AND A          ;
- $6729 JR Z,$673F     ;
- $672B AND $03        ;
- $672D JR NZ,$673F    ;
- $672F LD A,(DE)      ;
-*$6730 LD (HL),A      ;
- $6731 INC HL         ;
- $6732 INC DE         ;
- $6733 DJNZ $6725     ;
- $6735 POP HL         ;
- $6736 LD BC,$0020    ;
- $6739 ADD HL,BC      ;
- $673A POP BC         ;
- $673B DEC C          ;
- $673C JR NZ,$6723    ;
- $673E RET            ;
-*$673F LD A,(DE)      ;
- $6740 CP $5E         ;
- $6742 JR NZ,$6730    ;
- $6744 LD A,$5B       ;
- $6746 JR $6730       ;
- $6748 LD B,H         ;
- $6749 LD B,H         ;
- $674A LD B,H         ;
- $674B LD B,H         ;
- $674C LD B,H         ;
- $674D LD B,H         ;
- $674E LD B,H         ;
- $674F LD B,H         ;
- $6750 LD B,H         ;
- $6751 LD B,H         ;
- $6752 LD H,E         ;
- $6753 LD H,E         ;
- $6754 LD E,(HL)      ;
- $6755 LD E,(HL)      ;
- $6756 LD E,(HL)      ;
- $6757 LD H,E         ;
- $6758 LD H,E         ;
- $6759 LD B,H         ;
- $675A LD B,H         ;
- $675B LD H,E         ;
- $675C LD H,E         ;
- $675D LD E,(HL)      ;
- $675E LD E,(HL)      ;
- $675F LD E,(HL)      ;
- $6760 LD H,E         ;
- $6761 LD H,E         ;
- $6762 LD B,H         ;
- $6763 LD B,H         ;
- $6764 LD H,E         ;
- $6765 LD E,(HL)      ;
- $6766 LD E,(HL)      ;
- $6767 LD E,(HL)      ;
- $6768 LD E,(HL)      ;
- $6769 LD E,(HL)      ;
- $676A LD H,E         ;
- $676B LD B,H         ;
- $676C LD B,H         ;
- $676D LD H,E         ;
- $676E LD H,E         ;
- $676F LD H,E         ;
- $6770 LD E,(HL)      ;
- $6771 LD E,(HL)      ;
- $6772 LD H,E         ;
- $6773 LD H,E         ;
- $6774 LD B,H         ;
- $6775 LD B,H         ;
- $6776 LD B,H         ;
- $6777 LD B,H         ;
- $6778 LD B,H         ;
- $6779 LD B,H         ;
- $677A LD B,H         ;
- $677B LD B,H         ;
- $677C LD B,H         ;
- $677D LD B,H         ;
- $677E LD B,H         ;
- $677F LD B,H         ;
- $6780 LD B,H         ;
- $6781 LD B,H         ;
- $6782 LD B,H         ;
- $6783 LD B,H         ;
- $6784 LD B,H         ;
- $6785 LD B,H         ;
- $6786 LD B,H         ;
- $6787 SBC A,D        ;
- $6788 HALT           ;
- $6789 ADD HL,SP      ;
- $678A LD A,H         ;
- $678B LD (HL),D      ;
- $678C LD A,H         ;
- $678D LD (HL),D      ;
- $678E LD A,H         ;
- $678F RST $08        ;
- $6790 LD A,H         ;
-; This entry point is used by the routine at #R$66A6.
-*$6791 LD A,(IX+$04)  ;
- $6794 SLA A          ;
- $6796 LD HL,$6787    ;
- $6799 JP $6CD9       ;
-; This entry point is used by the routines at #R$64FA, #R$67AE and #R$6A98.
-*$679C LD A,R         ;
+*$6791 LD A,(IX+$04)                        ;
+ $6794 SLA A                                ;
+ $6796 LD HL,$6787                          ;
+ $6799 JP $6CD9                             ;
+
+; Routine at 679C
+;
+; Used by the routines at #R$64FA, #R$67AE and #R$6A98.
+c$679C LD A,R         ;
  $679E LD (IX+$05),A  ;
  $67A1 LD A,(IX+$02)  ;
  $67A4 LD (IX+$06),A  ;
@@ -2587,7 +2533,7 @@ c$6C53 CALL $75B9      ;
  $6CD3 SLA A           ;
  $6CD5 OR C            ;
  $6CD6 LD HL,$6CE1     ;
-; This entry point is used by the routine at #R$66D7.
+; This entry point is used by the routine at #R$6787.
 *$6CD9 LD C,A          ;
  $6CDA LD B,$00        ;
  $6CDC ADD HL,BC       ;
@@ -2881,7 +2827,7 @@ c$6EF1 CALL $75B9      ;
 *$6F29 CALL $6D9C      ;
  $6F2C BIT 4,A         ;
  $6F2E CALL Z,$6B70    ;
-; This entry point is used by the routines at #R$64FA, #R$66D7, #R$67AE,
+; This entry point is used by the routines at #R$64FA, #R$679C, #R$67AE,
 ; #R$698F, #R$6A98, #R$6BD0 and #R$6DBA.
 *$6F31 CALL $74EB      ;
  $6F34 JP $7450        ;
@@ -3744,7 +3690,7 @@ c$7450 EXX                     ; Switch to the shadow registers.
 
 ; Calculate Attribute Address
 ;
-; Used by the routines at #R$619E, #R$61B4, #R$62E7, #R$66D7, #R$6D0C, #R$73ED
+; Used by the routines at #R$619E, #R$61B4, #R$62E7, #R$670E, #R$6D0C, #R$73ED
 ; and #R$7450.
 @label=AttributeAddress
 c$748F LD A,L        ; Horizontal co-ordinate.
@@ -4776,7 +4722,7 @@ b$7BF1 DEFB $00                 ; Terminator.
  $7C35 DEFB %00001110,%01100000 ;
  $7C37 DEFB %00000011,%11000000 ; }
 
-; Sprite: Flower
+; Sprite: Flower (Others)
 ;
 ; .
 ;
@@ -4842,16 +4788,16 @@ b$7C39 DEFB $F8                                 ; Terminator.
  $7CC6 DEFB $0C,$D9,$C0                         ;
  $7CC9 DEFB $03,$80,$C0                         ;
  $7CCC DEFB $01,$00,$80                         ; }
-; #DIMENSIONS
+; For attributes see #R$6748. #DIMENSIONS
  $7CCF DEFB $E0                                 ; Terminator.
  $7CD0 DEFB $09                                 ; #LET(width=#PEEK(#PC)) Width
                                                 ; = #N({width}) bytes.
  $7CD1 DEFB $38                                 ; #LET(height=#PEEK(#PC))
                                                 ; Height = #N({height}) pixels.
- $7CD2 DEFB $00,$00,$00,$03,$FF,$C0,$00,$00,$00 ; {#UDGARRAY9,attr=7,scale=4,step=9,flip=2;(#PC)-(#PC
+ $7CD2 DEFB $00,$00,$00,$03,$FF,$C0,$00,$00,$00 ; {#UDGARRAY9,scale=4,step=9,flip=2;(#PC)-(#PC
  $7CDB DEFB $00,$00,$00,$03,$FF,$C0,$00,$00,$00 ; + ({height} * {width}) -
  $7CE4 DEFB $00,$00,$01,$80,$7F,$23,$00,$00,$00 ; {width})-$01-({width} *
- $7CED DEFB $00,$00,$09,$C7,$BF,$67,$08,$00,$00 ; $08)(flower-04)
+ $7CED DEFB $00,$00,$09,$C7,$BF,$67,$08,$00,$00 ; $08)@$6775-$6786;$676C-$6774;$6763-$676B;$6751-$6762;$6748-$6750(flower-04)
  $7CF6 DEFB $00,$00,$19,$EF,$BE,$F7,$18,$00,$00 ;
  $7CFF DEFB $00,$08,$19,$EF,$DD,$EF,$9C,$40,$00 ;
  $7D08 DEFB $00,$08,$1D,$EF,$ED,$EF,$BC,$E0,$00 ;
