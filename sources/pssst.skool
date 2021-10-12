@@ -1745,7 +1745,7 @@ c$65F7 LD HL,$5E16     ; #REGhl=#R$5E16.
 *$6671 LD A,($5E77)    ; #REGa=#R$5E77.
  $6674 AND %00000111   ; Keep only bits 0-2.
  $6676 OR %00001000    ; Set bit 3.
- $6678 LD (HL),A       ;
+ $6678 LD (HL),A       ; Stash the result at the address held by #REGhl.
  $6679 JP $60AA        ; Jump to #R$60AA.
 *$667C CALL $74AB      ; Call #R$74AB.
  $667F JP $7529        ; Jump to #R$7529.
@@ -4174,15 +4174,35 @@ w$761A DEFW $778A    ; Sprite ID: #R(#PEEK(#PC) + #PEEK(#PC + 1) *
  $7698 DEFW $7FAD    ; Sprite ID: #R(#PEEK(#PC) + #PEEK(#PC + 1) *
                      ; $100)(#EVAL((#PC - $761A) / 2)).
 
-; Data block at 769A
-b$769A DEFB $F8,$03,$13,$00,$FF,$00,$00,$FF
- $76A2 DEFB $00,$00,$FF,$00,$00,$FF,$00,$01
- $76AA DEFB $B9,$80,$03,$F6,$C0,$03,$76,$C0
- $76B2 DEFB $05,$6E,$E0,$05,$6E,$A0,$05,$65
- $76BA DEFB $A0,$05,$95,$A0,$02,$BB,$40,$02
- $76C2 DEFB $FB,$40,$01,$3E,$80,$00,$DD,$00
- $76CA DEFB $00,$5A,$00,$00,$2C,$00,$00,$18
- $76D2 DEFB $00,$00,$18,$00
+; Sprite: Flower (Bud)
+;
+; .
+;
+; .
+;
+; #DIMENSIONS
+b$769A DEFB $F8         ; Terminator.
+ $769B DEFB $03         ; #LET(width=#PEEK(#PC)) Width = #N({width}) bytes.
+ $769C DEFB $13         ; #LET(height=#PEEK(#PC)) Height = #N({height}) pixels.
+ $769D DEFB $00,$FF,$00 ; {#UDGARRAY3,attr=7,scale=4,step=3,flip=2;(#PC)-(#PC +
+ $76A0 DEFB $00,$FF,$00 ; ({height} * {width}) - {width})-$01-({width} *
+ $76A3 DEFB $00,$FF,$00 ; $08){$00, $04 * $05, $04 * {width} * $08, $04 *
+ $76A6 DEFB $00,$FF,$00 ; {height}}(flower-01)
+ $76A9 DEFB $01,$B9,$80 ;
+ $76AC DEFB $03,$F6,$C0 ;
+ $76AF DEFB $03,$76,$C0 ;
+ $76B2 DEFB $05,$6E,$E0 ;
+ $76B5 DEFB $05,$6E,$A0 ;
+ $76B8 DEFB $05,$65,$A0 ;
+ $76BB DEFB $05,$95,$A0 ;
+ $76BE DEFB $02,$BB,$40 ;
+ $76C1 DEFB $02,$FB,$40 ;
+ $76C4 DEFB $01,$3E,$80 ;
+ $76C7 DEFB $00,$DD,$00 ;
+ $76CA DEFB $00,$5A,$00 ;
+ $76CD DEFB $00,$2C,$00 ;
+ $76D0 DEFB $00,$18,$00 ;
+ $76D3 DEFB $00,$18,$00 ; }
 
 ; UDG Graphics
 ;
@@ -4756,90 +4776,134 @@ b$7BF1 DEFB $00                 ; Terminator.
  $7C35 DEFB %00001110,%01100000 ;
  $7C37 DEFB %00000011,%11000000 ; }
 
-; Data block at 7C39
-b$7C39 DEFB $F8,$03,$12,$0E,$B9,$60,$19,$B6
- $7C41 DEFB $98,$06,$76,$64,$06,$6E,$60,$0E
- $7C49 DEFB $6E,$70,$0D,$65,$70,$0D,$95,$70
- $7C51 DEFB $0D,$BB,$70,$0E,$FE,$F0,$06,$FE
- $7C59 DEFB $E0,$07,$7D,$E0,$03,$BD,$C0,$01
- $7C61 DEFB $DB,$80,$00,$E6,$00,$00,$2C,$00
- $7C69 DEFB $00,$34,$00,$00,$18,$00,$00,$18
- $7C71 DEFB $00,$F8,$03,$1E,$01,$5C,$80,$87
- $7C79 DEFB $5C,$C0,$FC,$AD,$70,$78,$AD,$1C
- $7C81 DEFB $01,$6D,$8E,$03,$5E,$C3,$0E,$DF
- $7C89 DEFB $70,$1D,$DF,$B8,$3D,$EF,$BC,$35
- $7C91 DEFB $7F,$DC,$76,$D7,$DE,$76,$BB,$CE
- $7C99 DEFB $FA,$7D,$BF,$FB,$FE,$BF,$FD,$FF
- $7CA1 DEFB $7F,$FE,$FD,$FF,$FF,$7D,$FF,$FF
- $7CA9 DEFB $7D,$FF,$7F,$7B,$FE,$7F,$7B,$FE
- $7CB1 DEFB $7F,$BB,$FE,$3F,$BB,$FC,$3F,$BB
- $7CB9 DEFB $FC,$1F,$BB,$F8,$0F,$FF,$F0,$07
- $7CC1 DEFB $FF,$E0,$07,$FF,$E0,$0C,$D9,$C0
- $7CC9 DEFB $03,$80,$C0,$01,$00,$80,$E0,$09
- $7CD1 DEFB $38,$00,$00,$00,$03,$FF,$C0,$00
- $7CD9 DEFB $00,$00,$00,$00,$00,$03,$FF,$C0
- $7CE1 DEFB $00,$00,$00,$00,$00,$01,$80,$7F
- $7CE9 DEFB $23,$00,$00,$00,$00,$00,$09,$C7
- $7CF1 DEFB $BF,$67,$08,$00,$00,$00,$00,$19
- $7CF9 DEFB $EF,$BE,$F7,$18,$00,$00,$00,$08
- $7D01 DEFB $19,$EF,$DD,$EF,$9C,$40,$00,$00
- $7D09 DEFB $08,$1D,$EF,$ED,$EF,$BC,$E0,$00
- $7D11 DEFB $00,$0C,$1F,$EF,$F3,$F7,$BE,$E0
- $7D19 DEFB $00,$01,$1C,$1E,$EF,$F3,$F7,$7F
- $7D21 DEFB $E0,$00,$01,$9E,$1F,$6F,$FB,$F6
- $7D29 DEFB $FD,$E0,$00,$01,$EF,$1F,$AF,$FB
- $7D31 DEFB $F6,$FD,$E7,$00,$21,$EF,$8F,$CF
- $7D39 DEFB $FB,$F5,$FD,$9F,$00,$30,$F7,$CF
- $7D41 DEFB $EF,$FB,$F5,$FD,$7F,$10,$38,$F7
- $7D49 DEFB $F7,$FF,$FD,$FD,$FC,$F8,$F0,$3C
- $7D51 DEFB $77,$FF,$FF,$FD,$FF,$FD,$C7,$F0
- $7D59 DEFB $3F,$3B,$FF,$FF,$FF,$FF,$FF,$3F
- $7D61 DEFB $E0,$3F,$3E,$00,$0F,$C2,$00,$00
- $7D69 DEFB $00,$E0,$1F,$01,$00,$FF,$C3,$C0
- $7D71 DEFB $00,$00,$E6,$1F,$00,$07,$FF,$76
- $7D79 DEFB $C3,$E0,$00,$DE,$0F,$00,$1F,$FF
- $7D81 DEFB $3E,$C7,$F8,$00,$DE,$0F,$00,$7F
- $7D89 DEFB $FF,$1C,$6E,$FE,$00,$BE,$07,$01
- $7D91 DEFB $FF,$FF,$3C,$FC,$FF,$80,$BE,$83
- $7D99 DEFB $03,$FF,$FF,$EB,$F8,$FF,$C0,$7C
- $7DA1 DEFB $FF,$C7,$FF,$FF,$CA,$3C,$FF,$E0
- $7DA9 DEFB $78,$FF,$0F,$00,$00,$03,$DF,$00
- $7DB1 DEFB $F0,$83,$7F,$1F,$00,$1F,$87,$A7
- $7DB9 DEFB $00,$F0,$FF,$7F,$3F,$01,$1F,$FF
- $7DC1 DEFB $70,$C0,$FC,$FF,$3F,$3F,$03,$1F
- $7DC9 DEFB $FE,$3C,$E0,$FC,$FF,$1F,$7F,$07
- $7DD1 DEFB $00,$7D,$9E,$7E,$FE,$FE,$0F,$7F
- $7DD9 DEFB $1E,$00,$03,$FE,$5C,$FE,$FC,$03
- $7DE1 DEFB $7F,$7D,$1F,$FF,$F4,$A0,$FE,$F8
- $7DE9 DEFB $01,$7F,$F2,$9E,$1C,$7F,$40,$FE
- $7DF1 DEFB $E0,$C1,$7F,$FF,$5D,$EB,$9E,$FF
- $7DF9 DEFB $FE,$80,$FF,$7F,$FF,$BD,$F7,$EF
- $7E01 DEFB $FF,$FE,$E0,$7F,$7F,$FF,$6F,$FF
- $7E09 DEFB $EC,$FF,$FE,$FC,$7F,$7F,$FF,$60
- $7E11 DEFB $FF,$FC,$FF,$FE,$FF,$3F,$3F,$FF
- $7E19 DEFB $0F,$00,$FC,$FF,$FC,$FF,$1F,$3F
- $7E21 DEFB $FF,$17,$FF,$08,$FF,$FC,$FE,$0F
- $7E29 DEFB $3F,$FF,$37,$9C,$F0,$FF,$FC,$FC
- $7E31 DEFB $03,$1F,$FF,$37,$49,$70,$FF,$F8
- $7E39 DEFB $F0,$00,$1F,$FF,$17,$41,$70,$FF
- $7E41 DEFB $F8,$80,$01,$0F,$FF,$1B,$77,$70
- $7E49 DEFB $FF,$F0,$00,$03,$07,$FF,$1A,$88
- $7E51 DEFB $A0,$FF,$E0,$00,$07,$03,$FF,$1B
- $7E59 DEFB $55,$60,$FF,$C0,$80,$7F,$01,$FF
- $7E61 DEFB $18,$3F,$E0,$FF,$80,$E0,$7F,$00
- $7E69 DEFB $7F,$0B,$C0,$40,$FE,$00,$FF,$3F
- $7E71 DEFB $00,$0F,$07,$FF,$80,$F0,$00,$FE
- $7E79 DEFB $0F,$00,$00,$00,$7E,$00,$00,$00
- $7E81 DEFB $FC,$0C,$F1,$FF,$7F,$7F,$FE,$FF
- $7E89 DEFB $8F,$E0,$00,$01,$FF,$7F,$7F,$FF
- $7E91 DEFB $7F,$80,$00,$00,$03,$FF,$FF,$7E
- $7E99 DEFB $FF,$7F,$80,$00,$00,$03,$FE,$FE
- $7EA1 DEFB $FF,$7F,$BF,$C0,$00,$00,$07,$FD
- $7EA9 DEFB $FE,$7F,$7F,$BF,$E0,$00,$00,$0F
- $7EB1 DEFB $F1,$FC,$7E,$3F,$9F,$FC,$00,$00
- $7EB9 DEFB $0F,$C1,$F8,$3C,$1F,$07,$FC,$00
- $7EC1 DEFB $00,$00,$01,$E0,$18,$07,$00,$00
- $7EC9 DEFB $00
+; Sprite: Flower
+;
+; .
+;
+; .
+;
+; #DIMENSIONS
+b$7C39 DEFB $F8                                 ; Terminator.
+ $7C3A DEFB $03                                 ; #LET(width=#PEEK(#PC)) Width
+                                                ; = #N({width}) bytes.
+ $7C3B DEFB $12                                 ; #LET(height=#PEEK(#PC))
+                                                ; Height = #N({height}) pixels.
+ $7C3C DEFB $0E,$B9,$60                         ; {#UDGARRAY3,attr=7,scale=4,step=3,flip=2;(#PC)-(#PC
+ $7C3F DEFB $19,$B6,$98                         ; + ({height} * {width}) -
+ $7C42 DEFB $06,$76,$64                         ; {width})-$01-({width} *
+ $7C45 DEFB $06,$6E,$60                         ; $08){$00, $04 * $06, $04 *
+ $7C48 DEFB $0E,$6E,$70                         ; {width} * $08, $04 *
+ $7C4B DEFB $0D,$65,$70                         ; {height}}(flower-02)
+ $7C4E DEFB $0D,$95,$70                         ;
+ $7C51 DEFB $0D,$BB,$70                         ;
+ $7C54 DEFB $0E,$FE,$F0                         ;
+ $7C57 DEFB $06,$FE,$E0                         ;
+ $7C5A DEFB $07,$7D,$E0                         ;
+ $7C5D DEFB $03,$BD,$C0                         ;
+ $7C60 DEFB $01,$DB,$80                         ;
+ $7C63 DEFB $00,$E6,$00                         ;
+ $7C66 DEFB $00,$2C,$00                         ;
+ $7C69 DEFB $00,$34,$00                         ;
+ $7C6C DEFB $00,$18,$00                         ;
+ $7C6F DEFB $00,$18,$00                         ; }
+; #DIMENSIONS
+ $7C72 DEFB $F8                                 ; Terminator.
+ $7C73 DEFB $03                                 ; #LET(width=#PEEK(#PC)) Width
+                                                ; = #N({width}) bytes.
+ $7C74 DEFB $1E                                 ; #LET(height=#PEEK(#PC))
+                                                ; Height = #N({height}) pixels.
+ $7C75 DEFB $01,$5C,$80                         ; {#UDGARRAY3,attr=7,scale=4,step=3,flip=2;(#PC)-(#PC
+ $7C78 DEFB $87,$5C,$C0                         ; + ({height} * {width}) -
+ $7C7B DEFB $FC,$AD,$70                         ; {width})-$01-({width} *
+ $7C7E DEFB $78,$AD,$1C                         ; $08){$00, $04 * $02, $04 *
+ $7C81 DEFB $01,$6D,$8E                         ; {width} * $08, $04 *
+ $7C84 DEFB $03,$5E,$C3                         ; {height}}(flower-03)
+ $7C87 DEFB $0E,$DF,$70                         ;
+ $7C8A DEFB $1D,$DF,$B8                         ;
+ $7C8D DEFB $3D,$EF,$BC                         ;
+ $7C90 DEFB $35,$7F,$DC                         ;
+ $7C93 DEFB $76,$D7,$DE                         ;
+ $7C96 DEFB $76,$BB,$CE                         ;
+ $7C99 DEFB $FA,$7D,$BF                         ;
+ $7C9C DEFB $FB,$FE,$BF                         ;
+ $7C9F DEFB $FD,$FF,$7F                         ;
+ $7CA2 DEFB $FE,$FD,$FF                         ;
+ $7CA5 DEFB $FF,$7D,$FF                         ;
+ $7CA8 DEFB $FF,$7D,$FF                         ;
+ $7CAB DEFB $7F,$7B,$FE                         ;
+ $7CAE DEFB $7F,$7B,$FE                         ;
+ $7CB1 DEFB $7F,$BB,$FE                         ;
+ $7CB4 DEFB $3F,$BB,$FC                         ;
+ $7CB7 DEFB $3F,$BB,$FC                         ;
+ $7CBA DEFB $1F,$BB,$F8                         ;
+ $7CBD DEFB $0F,$FF,$F0                         ;
+ $7CC0 DEFB $07,$FF,$E0                         ;
+ $7CC3 DEFB $07,$FF,$E0                         ;
+ $7CC6 DEFB $0C,$D9,$C0                         ;
+ $7CC9 DEFB $03,$80,$C0                         ;
+ $7CCC DEFB $01,$00,$80                         ; }
+; #DIMENSIONS
+ $7CCF DEFB $E0                                 ; Terminator.
+ $7CD0 DEFB $09                                 ; #LET(width=#PEEK(#PC)) Width
+                                                ; = #N({width}) bytes.
+ $7CD1 DEFB $38                                 ; #LET(height=#PEEK(#PC))
+                                                ; Height = #N({height}) pixels.
+ $7CD2 DEFB $00,$00,$00,$03,$FF,$C0,$00,$00,$00 ; {#UDGARRAY9,attr=7,scale=4,step=9,flip=2;(#PC)-(#PC
+ $7CDB DEFB $00,$00,$00,$03,$FF,$C0,$00,$00,$00 ; + ({height} * {width}) -
+ $7CE4 DEFB $00,$00,$01,$80,$7F,$23,$00,$00,$00 ; {width})-$01-({width} *
+ $7CED DEFB $00,$00,$09,$C7,$BF,$67,$08,$00,$00 ; $08)(flower-04)
+ $7CF6 DEFB $00,$00,$19,$EF,$BE,$F7,$18,$00,$00 ;
+ $7CFF DEFB $00,$08,$19,$EF,$DD,$EF,$9C,$40,$00 ;
+ $7D08 DEFB $00,$08,$1D,$EF,$ED,$EF,$BC,$E0,$00 ;
+ $7D11 DEFB $00,$0C,$1F,$EF,$F3,$F7,$BE,$E0,$00 ;
+ $7D1A DEFB $01,$1C,$1E,$EF,$F3,$F7,$7F,$E0,$00 ;
+ $7D23 DEFB $01,$9E,$1F,$6F,$FB,$F6,$FD,$E0,$00 ;
+ $7D2C DEFB $01,$EF,$1F,$AF,$FB,$F6,$FD,$E7,$00 ;
+ $7D35 DEFB $21,$EF,$8F,$CF,$FB,$F5,$FD,$9F,$00 ;
+ $7D3E DEFB $30,$F7,$CF,$EF,$FB,$F5,$FD,$7F,$10 ;
+ $7D47 DEFB $38,$F7,$F7,$FF,$FD,$FD,$FC,$F8,$F0 ;
+ $7D50 DEFB $3C,$77,$FF,$FF,$FD,$FF,$FD,$C7,$F0 ;
+ $7D59 DEFB $3F,$3B,$FF,$FF,$FF,$FF,$FF,$3F,$E0 ;
+ $7D62 DEFB $3F,$3E,$00,$0F,$C2,$00,$00,$00,$E0 ;
+ $7D6B DEFB $1F,$01,$00,$FF,$C3,$C0,$00,$00,$E6 ;
+ $7D74 DEFB $1F,$00,$07,$FF,$76,$C3,$E0,$00,$DE ;
+ $7D7D DEFB $0F,$00,$1F,$FF,$3E,$C7,$F8,$00,$DE ;
+ $7D86 DEFB $0F,$00,$7F,$FF,$1C,$6E,$FE,$00,$BE ;
+ $7D8F DEFB $07,$01,$FF,$FF,$3C,$FC,$FF,$80,$BE ;
+ $7D98 DEFB $83,$03,$FF,$FF,$EB,$F8,$FF,$C0,$7C ;
+ $7DA1 DEFB $FF,$C7,$FF,$FF,$CA,$3C,$FF,$E0,$78 ;
+ $7DAA DEFB $FF,$0F,$00,$00,$03,$DF,$00,$F0,$83 ;
+ $7DB3 DEFB $7F,$1F,$00,$1F,$87,$A7,$00,$F0,$FF ;
+ $7DBC DEFB $7F,$3F,$01,$1F,$FF,$70,$C0,$FC,$FF ;
+ $7DC5 DEFB $3F,$3F,$03,$1F,$FE,$3C,$E0,$FC,$FF ;
+ $7DCE DEFB $1F,$7F,$07,$00,$7D,$9E,$7E,$FE,$FE ;
+ $7DD7 DEFB $0F,$7F,$1E,$00,$03,$FE,$5C,$FE,$FC ;
+ $7DE0 DEFB $03,$7F,$7D,$1F,$FF,$F4,$A0,$FE,$F8 ;
+ $7DE9 DEFB $01,$7F,$F2,$9E,$1C,$7F,$40,$FE,$E0 ;
+ $7DF2 DEFB $C1,$7F,$FF,$5D,$EB,$9E,$FF,$FE,$80 ;
+ $7DFB DEFB $FF,$7F,$FF,$BD,$F7,$EF,$FF,$FE,$E0 ;
+ $7E04 DEFB $7F,$7F,$FF,$6F,$FF,$EC,$FF,$FE,$FC ;
+ $7E0D DEFB $7F,$7F,$FF,$60,$FF,$FC,$FF,$FE,$FF ;
+ $7E16 DEFB $3F,$3F,$FF,$0F,$00,$FC,$FF,$FC,$FF ;
+ $7E1F DEFB $1F,$3F,$FF,$17,$FF,$08,$FF,$FC,$FE ;
+ $7E28 DEFB $0F,$3F,$FF,$37,$9C,$F0,$FF,$FC,$FC ;
+ $7E31 DEFB $03,$1F,$FF,$37,$49,$70,$FF,$F8,$F0 ;
+ $7E3A DEFB $00,$1F,$FF,$17,$41,$70,$FF,$F8,$80 ;
+ $7E43 DEFB $01,$0F,$FF,$1B,$77,$70,$FF,$F0,$00 ;
+ $7E4C DEFB $03,$07,$FF,$1A,$88,$A0,$FF,$E0,$00 ;
+ $7E55 DEFB $07,$03,$FF,$1B,$55,$60,$FF,$C0,$80 ;
+ $7E5E DEFB $7F,$01,$FF,$18,$3F,$E0,$FF,$80,$E0 ;
+ $7E67 DEFB $7F,$00,$7F,$0B,$C0,$40,$FE,$00,$FF ;
+ $7E70 DEFB $3F,$00,$0F,$07,$FF,$80,$F0,$00,$FE ;
+ $7E79 DEFB $0F,$00,$00,$00,$7E,$00,$00,$00,$FC ;
+ $7E82 DEFB $0C,$F1,$FF,$7F,$7F,$FE,$FF,$8F,$E0 ;
+ $7E8B DEFB $00,$01,$FF,$7F,$7F,$FF,$7F,$80,$00 ;
+ $7E94 DEFB $00,$03,$FF,$FF,$7E,$FF,$7F,$80,$00 ;
+ $7E9D DEFB $00,$03,$FE,$FE,$FF,$7F,$BF,$C0,$00 ;
+ $7EA6 DEFB $00,$07,$FD,$FE,$7F,$7F,$BF,$E0,$00 ;
+ $7EAF DEFB $00,$0F,$F1,$FC,$7E,$3F,$9F,$FC,$00 ;
+ $7EB8 DEFB $00,$0F,$C1,$F8,$3C,$1F,$07,$FC,$00 ;
+ $7EC1 DEFB $00,$00,$01,$E0,$18,$07,$00,$00,$00 ; }
 
 ; Sprite: Explosions
 ;
