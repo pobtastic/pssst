@@ -6,3 +6,7 @@
 
 https://zxaaa.net/DENIED/Pssst%20(1983)(Ultimate%20Play%20The%20Game).tzx
 Pssst.z80
+
+--ram move=$5EED,$2114,$5EEC
+--start 23424
+--stack 23808
